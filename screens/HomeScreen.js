@@ -1,0 +1,66 @@
+import React, { useState } from 'react';
+import { View, ScrollView, StyleSheet, Button } from 'react-native';
+import Header from '../components/Header';
+import WorkoutList from '../components/WorkoutList';
+
+export default function HomeScreen({ navigation }) {
+
+  const [workouts, setWorkouts] = useState([
+    {
+      id: 1,
+      title: "Push Up",
+      image: require('../assets/images/pushup.png')
+    },
+    {
+      id: 2,
+      title: "Sit Up",
+      image: require('../assets/images/situp.png')
+    },
+    {
+      id: 3,
+      title: "Jumping Jack",
+      image: require('../assets/images/jumpingjack.png')
+    },
+    {
+      id: 4,
+      title: "Plank",
+      image: require('../assets/images/plank.png')
+    },
+    {
+      id: 5,
+      title: "Squat",
+      image: require('../assets/images/squat.png')
+    }
+  ]);
+
+  return (
+    <View style={styles.container}>
+      <Header />
+      <Button
+         title="Kategori"
+         onPress={() => navigation.navigate('Category')}
+/>
+
+      <Button
+        title="Lihat Detail"
+        onPress={() => navigation.navigate('Detail')}
+      />
+
+      <Button
+        title="Profile"
+        onPress={() => navigation.navigate('Profile')}
+      />
+
+      <ScrollView>
+        <WorkoutList workouts={workouts} />
+      </ScrollView>
+
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
