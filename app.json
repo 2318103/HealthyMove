@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "HealthyMove",
+    "slug": "HealthyMove",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/pushup.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/pushup.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/pushup.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/images/pushup.png"
+    }
+  }
+}
