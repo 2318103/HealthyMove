@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { supabase } from '../lib/supabase';
+
 import {
   View,
   Text,
@@ -15,10 +17,7 @@ export default function AddWorkoutScreen({ navigation }) {
   const [durasi, setDurasi] = useState('');
   const [level, setLevel] = useState('');
 
-  const API_URL =
-    'https://6a0ae92421e445625696dbd3.mockapi.io/workouts';
-
-  // ================= POST =================
+  // ================= INSERT SUPABASE =================
   const addWorkout = async () => {
 
     if (
@@ -26,29 +25,36 @@ export default function AddWorkoutScreen({ navigation }) {
       durasi === '' ||
       level === ''
     ) {
+
       Alert.alert(
         'Warning',
         'Semua data harus diisi'
       );
+
       return;
     }
 
-    try {
+    const { error } =
+      await supabase
+        .from('workouts')
+        .insert([
+          {
+            nama,
+            durasi,
+            level
+          }
+        ]);
 
-      await fetch(API_URL, {
+    if (error) {
 
-        method: 'POST',
+      console.log(error);
 
-        headers: {
-          'Content-Type': 'application/json'
-        },
+      Alert.alert(
+        'Error',
+        'Gagal menambahkan workout'
+      );
 
-        body: JSON.stringify({
-          nama,
-          durasi,
-          level
-        })
-      });
+    } else {
 
       Alert.alert(
         'Success',
@@ -56,9 +62,6 @@ export default function AddWorkoutScreen({ navigation }) {
       );
 
       navigation.goBack();
-
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -110,7 +113,7 @@ export default function AddWorkoutScreen({ navigation }) {
         onChangeText={setLevel}
       />
 
-      {/* Button */}
+      {/* BUTTON */}
       <TouchableOpacity
         style={styles.button}
         onPress={addWorkout}

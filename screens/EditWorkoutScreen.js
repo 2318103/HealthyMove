@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { supabase } from '../lib/supabase';
+
 import {
   View,
   Text,
@@ -20,28 +22,43 @@ export default function EditWorkoutScreen({
   const [durasi, setDurasi] = useState(workout.durasi);
   const [level, setLevel] = useState(workout.level);
 
-  const API_URL =
-    'https://6a0ae92421e445625696dbd3.mockapi.io/workouts';
-
-  // ================= PUT =================
+  // ================= UPDATE SUPABASE =================
   const updateWorkout = async () => {
 
-    try {
+    if (
+      nama === '' ||
+      durasi === '' ||
+      level === ''
+    ) {
 
-      await fetch(`${API_URL}/${workout.id}`, {
+      Alert.alert(
+        'Warning',
+        'Semua data harus diisi'
+      );
 
-        method: 'PUT',
+      return;
+    }
 
-        headers: {
-          'Content-Type': 'application/json'
-        },
-
-        body: JSON.stringify({
+    const { error } =
+      await supabase
+        .from('workouts')
+        .update({
           nama,
           durasi,
           level
         })
-      });
+        .eq('id', workout.id);
+
+    if (error) {
+
+      console.log(error);
+
+      Alert.alert(
+        'Error',
+        'Gagal update workout'
+      );
+
+    } else {
 
       Alert.alert(
         'Success',
@@ -49,9 +66,6 @@ export default function EditWorkoutScreen({
       );
 
       navigation.goBack();
-
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -63,30 +77,53 @@ export default function EditWorkoutScreen({
         Edit Workout
       </Text>
 
+      <Text style={styles.subtitle}>
+        Perbarui jadwal latihanmu 💪
+      </Text>
+
+      {/* Nama Workout */}
+      <Text style={styles.label}>
+        🏋 Nama Workout
+      </Text>
+
       <TextInput
         style={styles.input}
         value={nama}
         onChangeText={setNama}
+        placeholder="Nama Workout"
       />
+
+      {/* Durasi */}
+      <Text style={styles.label}>
+        ⏱ Durasi
+      </Text>
 
       <TextInput
         style={styles.input}
         value={durasi}
         onChangeText={setDurasi}
+        placeholder="Durasi Workout"
       />
+
+      {/* Level */}
+      <Text style={styles.label}>
+        🔥 Level
+      </Text>
 
       <TextInput
         style={styles.input}
         value={level}
         onChangeText={setLevel}
+        placeholder="Level Workout"
       />
 
+      {/* BUTTON */}
       <TouchableOpacity
         style={styles.button}
         onPress={updateWorkout}
       >
         <Text style={styles.buttonText}>
-          Update
+          Update Workout
         </Text>
       </TouchableOpacity>
 
@@ -99,34 +136,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: '#fff'
   },
 
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: 'center'
+  },
+
+  subtitle: {
+    textAlign: 'center',
+    marginBottom: 25,
+    color: 'gray'
+  },
+
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8
   },
 
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 15
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 18,
+    backgroundColor: '#f9f9f9'
   },
 
   button: {
     backgroundColor: 'orange',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center'
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 10
   },
 
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 16
   }
 
 });
