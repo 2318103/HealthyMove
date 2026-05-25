@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import { supabase } from '../lib/supabase';
+
 import {
   View,
   Text,
@@ -13,33 +15,38 @@ export default function ApiScreen({ navigation }) {
 
   const [data, setData] = useState([]);
 
-  const API_URL =
-    'https://6a0ae92421e445625696dbd3.mockapi.io/workouts';
-
   // ================= GET =================
   const getWorkout = async () => {
 
-    try {
+    const { data, error } =
+      await supabase
+        .from('workouts')
+        .select('*');
 
-      const response = await fetch(API_URL);
+    if (error) {
 
-      const json = await response.json();
-
-      setData(json);
-
-    } catch (error) {
       console.log(error);
+
+    } else {
+
+      setData(data);
     }
   };
 
   // ================= DELETE =================
   const deleteWorkout = async (id) => {
 
-    try {
+    const { error } =
+      await supabase
+        .from('workouts')
+        .delete()
+        .eq('id', id);
 
-      await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-      });
+    if (error) {
+
+      console.log(error);
+
+    } else {
 
       Alert.alert(
         'Success',
@@ -47,12 +54,10 @@ export default function ApiScreen({ navigation }) {
       );
 
       getWorkout();
-
-    } catch (error) {
-      console.log(error);
     }
   };
 
+  // ================= LOAD DATA =================
   useEffect(() => {
     getWorkout();
   }, []);
@@ -65,6 +70,7 @@ export default function ApiScreen({ navigation }) {
         Workout Schedule
       </Text>
 
+      {/* BUTTON TAMBAH */}
       <TouchableOpacity
         style={styles.addButton}
         onPress={() =>
@@ -76,9 +82,13 @@ export default function ApiScreen({ navigation }) {
         </Text>
       </TouchableOpacity>
 
+      {/* LIST DATA */}
       <FlatList
         data={data}
-        keyExtractor={(item) => item.id}
+
+        keyExtractor={(item) =>
+          item.id.toString()
+        }
 
         renderItem={({ item }) => (
 
@@ -98,6 +108,7 @@ export default function ApiScreen({ navigation }) {
 
             <View style={styles.buttonContainer}>
 
+              {/* EDIT */}
               <TouchableOpacity
                 style={styles.editButton}
 
@@ -113,8 +124,10 @@ export default function ApiScreen({ navigation }) {
                 </Text>
               </TouchableOpacity>
 
+              {/* DELETE */}
               <TouchableOpacity
                 style={styles.deleteButton}
+
                 onPress={() =>
                   deleteWorkout(item.id)
                 }
